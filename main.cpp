@@ -161,9 +161,9 @@ public:
 				result = false;
 			}
 		}
-		if (result == true) {
-			cout << "[change_in_row] { i, j, value } : {" << i << ", " << j << ", " << value << "} " << endl;
-		}
+//		if (result == true) {		// check
+//			cout << "[change_in_row] { i, j, value } : {" << i << ", " << j << ", " << value << "} " << endl;
+//		}
 		return result;
 	}
 	
@@ -181,9 +181,9 @@ public:
 				result = false;
 			}
 		}
-		if (result == true) {
-			cout << "[change_in_col] { i, j, value } : {" << i << ", " << j << ", " << value << "} " << endl;
-		}
+//		if (result == true) {		// check
+//			cout << "[change_in_col] { i, j, value } : {" << i << ", " << j << ", " << value << "} " << endl;
+//		}
 		return result;
 		
 	}
@@ -208,9 +208,9 @@ public:
 			}
 		}
 		
-		if (result == true) {
-			cout << "[change_in_box] { i, j, value } : {" << i << ", " << j << ", " << value << "} " << endl;
-		}
+//		if (result == true) {		// check
+//			cout << "[change_in_box] { i, j, value } : {" << i << ", " << j << ", " << value << "} " << endl;
+//		}
 		return result;	
 	}
 	
@@ -244,6 +244,10 @@ public:
 							sudoku.putValue(i, j, value);
 						}
 					}
+					//cout << "size : {" << i << ", " << j << "} : "  << candidate[i][j].capacity() << endl;	// check
+					if (candidate[i][j].size() == 1) {
+						sudoku.putValue(i, j, candidate[i][j].front());
+					}
 				}
 			}
 		}
@@ -269,7 +273,6 @@ int main(int argc, char** argv) {
 	
 	
 	string filePath = "ex1.txt";
-	
 	ifstream openFile(filePath.data());
 	if (openFile.is_open()) {
 		string line;
@@ -279,6 +282,7 @@ int main(int argc, char** argv) {
 			}
 		}
 	}	
+	openFile.close();
 	sudoku.print();		//check
 
 
@@ -287,12 +291,35 @@ int main(int argc, char** argv) {
 	SudokuSolver solver(sudoku);	
 	solver.getPossibleNumber();
 	
-	solver.checkExist();		//check
+	//solver.checkExist();		//check
 	
-	for (int i = 0; i < 5; i++) {		// check, repeating
+	for (int i = 0; i < 100; i++) {		// check, repeating
 	solver.fillInSUDOKU();
-	solver.getSudoku().print();
+	//solver.getSudoku().print();
 	}
+	//solver.checkExist();		//check
+	solver.getSudoku().print();
+	
+	
+	string writePath = "result.txt";
+	ofstream writeFile(writePath.data());
+	if (writeFile.is_open()) {
+		for (int i = 0; i < 9; i++) {
+			if (i % 3 == 0 && i != 0) {
+				for (int j = 0; j < 3; j++) { writeFile << "-----   "; }
+				writeFile << endl;
+			}
+			
+			for (int j = 0; j < 9; j++) {
+				if (j % 3 == 0 && j != 0) { writeFile << '|' << ' '; }
+				writeFile << solver.getSudoku().getValue(i, j) << ' ';
+			}
+			writeFile << endl;
+		}
+	}		
+	writeFile.close();
+	
+	
 	
 	return 0;
 }
